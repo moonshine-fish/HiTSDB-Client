@@ -349,11 +349,13 @@ public class BalHiTSDBClient implements HiTSDB {
         if (clients.isEmpty()) {
             throw new RuntimeException("The number of available clients is zero, please check it");
         }
-        if (idx >= clients.size()) {
-            idx = 0;
-        }
-        HiTSDB client = clients.get(idx);
+        int index = idx;
+
         idx = (++idx) % clients.size();
+        if (index >= clients.size()) {
+            index = 0;
+        }
+        HiTSDB client = clients.get(index);
         if (client == null) {
             throw new RuntimeException("The client is null");
         }
@@ -427,6 +429,9 @@ public class BalHiTSDBClient implements HiTSDB {
             try {
                 return client().putSync(points);
             } catch (Exception e) {
+                for(Point point : points){
+
+                }
                 exception = e;
             }
         }
@@ -845,6 +850,29 @@ public class BalHiTSDBClient implements HiTSDB {
             }
         }
         throw new RuntimeException(exception);
+    }
+
+    @Override
+    public List<LastDataValue> queryLast(LastPointQuery query) throws HttpUnknowStatusException {
+        Exception exception = null;
+        for (int i = 0; i < MAX_RETRY_SIZE; i++) {
+            try {
+                return client().queryLast(query);
+            } catch (Exception e) {
+                exception = e;
+            }
+        }
+        throw new RuntimeException(exception);
+    }
+
+    @Override
+    public boolean truncate() throws HttpUnknowStatusException {
+       return client().truncate();
+    }
+
+    @Override
+    public boolean deleteAllTable() throws HttpUnknowStatusException {
+       return client().deleteAllTable();
     }
 
     @Override
