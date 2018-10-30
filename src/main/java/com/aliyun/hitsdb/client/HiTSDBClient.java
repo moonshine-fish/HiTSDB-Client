@@ -54,7 +54,6 @@ public class HiTSDBClient implements HiTSDB {
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public HiTSDBClient(HiTSDBConfig config) throws HttpClientInitException {
@@ -1063,45 +1062,6 @@ public class HiTSDBClient implements HiTSDB {
 					map.put(entry.getKey(),entry.getValue().toString());
 				}
 				return map;
-			case ServerNotSupport:
-				throw new HttpServerNotSupportException(resultResponse);
-			case ServerError:
-				throw new HttpServerErrorException(resultResponse);
-			default:
-				throw new HttpUnknowStatusException(resultResponse);
-		}
-	}
-
-
-	public boolean getLastDataPointStatus() throws HttpUnknowStatusException {
-		HttpResponse httpResponse = httpclient.get(HttpAPI.UPDATE_LAST, EMPTY_JSON_STR);
-		ResultResponse resultResponse = ResultResponse.simplify(httpResponse, this.httpCompress);
-		HttpStatus httpStatus = resultResponse.getHttpStatus();
-		switch (httpStatus) {
-			case ServerSuccessNoContent:
-				return false;
-			case ServerSuccess:
-				return Boolean.valueOf(resultResponse.getContent());
-			case ServerNotSupport:
-				throw new HttpServerNotSupportException(resultResponse);
-			case ServerError:
-				throw new HttpServerErrorException(resultResponse);
-			default:
-				throw new HttpUnknowStatusException(resultResponse);
-		}
-	}
-
-	public boolean updateLastDataPointStatus(boolean flag) throws HttpUnknowStatusException {
-		JSONObject object = new JSONObject();
-		object.put("value",flag);
-		HttpResponse httpResponse = httpclient.post(HttpAPI.UPDATE_LAST, object.toJSONString());
-		ResultResponse resultResponse = ResultResponse.simplify(httpResponse, this.httpCompress);
-		HttpStatus httpStatus = resultResponse.getHttpStatus();
-		switch (httpStatus) {
-			case ServerSuccessNoContent:
-				return true;
-			case ServerSuccess:
-				return true;
 			case ServerNotSupport:
 				throw new HttpServerNotSupportException(resultResponse);
 			case ServerError:

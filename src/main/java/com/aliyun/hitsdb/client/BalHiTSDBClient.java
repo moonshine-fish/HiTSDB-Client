@@ -899,16 +899,6 @@ public class BalHiTSDBClient implements HiTSDB {
     }
 
     @Override
-    public boolean getLastDataPointStatus() throws HttpUnknowStatusException {
-        return client().getLastDataPointStatus();
-    }
-
-    @Override
-    public boolean updateLastDataPointStatus(boolean flag) throws HttpUnknowStatusException {
-        return client().updateLastDataPointStatus(flag);
-    }
-
-    @Override
     public void close() throws IOException {
         close(false);
     }
